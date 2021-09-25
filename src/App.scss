@@ -1,3 +1,23 @@
 .starter {
   font-size: 18px;
 }
+
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid red;
+  border-radius: 15px;
+  margin-bottom: 10px;
+}
+
+.container {
+  display: flex;
+}
+
+.character,
+.episodes {
+  display: flex;
+  flex-direction: column;
+}
