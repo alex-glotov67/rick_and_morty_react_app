@@ -1,9 +1,3 @@
-# React TypeScript Starter Pack
+# Rick and Morty react application
 
-To use this template click `Use this template`
-
-### Available Scripts
-
-`Deploy` - available to deploy your application to gh-pages
-
-`SCSS Preprocessor` - available to write your styles with modern style language
+- [DEMO](https://alex-glotov67.github.io/rick_and_morty_react_app/)
