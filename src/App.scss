@@ -7,13 +7,33 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  border: 2px solid red;
-  border-radius: 15px;
   margin-bottom: 10px;
+
+  &_info {
+    display: flex;
+    justify-content: space-between;
+    padding: 15px;
+    border: 1px solid lightgray;
+    border-radius: 15px;
+  }
 }
 
 .container {
   display: flex;
+
+  &_grid {
+    display: grid;
+    grid-template-columns: repeat(4, auto);
+    gap: 20px;
+
+    @media (max-width: 769px) {
+      grid-template-columns: repeat(3, auto);
+    }
+
+    @media (max-width: 569px) {
+      grid-template-columns: repeat(2, auto);
+    }
+  }
 }
 
 .character,

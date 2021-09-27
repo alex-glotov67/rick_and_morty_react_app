@@ -1,40 +1,61 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
+import { getCharacters } from '../../api/characters';
 import { Context } from '../../Context';
+import { CharacterCard } from '../CharacterCard';
 
 export const CharacterList: React.FC = () => {
-  const { characters, episodes, locations } = useContext(Context);
+  const { characters, setCharactersPage } = useContext(Context);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState<number[]>([]);
+
+  const handlePageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+    setPage(+event.target.value);
+  };
+
+  useEffect(() => {
+    (async function getData() {
+      try {
+        const allPages = await (await getCharacters(1)).info.pages;
+        const tempPages: number[] = [];
+
+        for (let i = 1; i <= allPages; i += 1) {
+          tempPages.push(i);
+        }
+
+        setTotalPages(tempPages);
+      } catch {
+        setTotalPages([]);
+      }
+    }());
+  }, []);
+
+  useEffect(() => {
+    setCharactersPage(page);
+  }, [page]);
 
   return (
-    <div className="container">
-      <div className="characters">
-        {characters && characters.map(character => (
-          <div className="card" key={character.id}>
-            <p>{character.name}</p>
-            <p>{character.gender}</p>
-            <p>{character.origin.name}</p>
-          </div>
-        ))}
+    <>
+      <label htmlFor="characters_page">
+        {'Characters page: '}
+        <select
+          name="characters_page"
+          id="characters_page"
+          onChange={(event) => handlePageChange(event)}
+        >
+          {totalPages.map(p => (
+            <option key={p}>
+              {p}
+            </option>
+          ))}
+        </select>
+      </label>
+      <div className="container">
+        <div className="container_grid">
+          {characters && characters.map((character) => (
+            <CharacterCard character={character} key={character.id} />
+          ))}
+        </div>
       </div>
-
-      <div className="episodes">
-        {episodes && episodes.map(episode => (
-          <div className="card" key={episode.id}>
-            <p>{episode.name}</p>
-            <p>{episode.air_date}</p>
-            <p>{episode.url}</p>
-          </div>
-        ))}
-      </div>
-
-      <div className="episodes">
-        {locations && locations.map(location => (
-          <div className="card" key={location.id}>
-            <p>{location.name}</p>
-            <p>{location.type}</p>
-            <p>{location.dimension}</p>
-          </div>
-        ))}
-      </div>
-    </div>
+    </>
   );
 };
