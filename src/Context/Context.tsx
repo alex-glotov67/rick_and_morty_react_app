@@ -9,6 +9,8 @@ interface ContextValue {
   episodes: Episode[];
   locations: Location[];
   setCharactersPage: Dispatch<SetStateAction<number>>;
+  setLocationsPage: Dispatch<SetStateAction<number>>;
+  setEpisodesPage: Dispatch<SetStateAction<number>>;
 }
 
 export const Context = createContext<ContextValue>({
@@ -16,11 +18,15 @@ export const Context = createContext<ContextValue>({
   episodes: [],
   locations: [],
   setCharactersPage: () => {},
+  setLocationsPage: () => {},
+  setEpisodesPage: () => {},
 });
 
 export const ContextProvider: React.FC = ({ children }) => {
   const [characters, setCharacters] = useState<Character[]>([]);
   const [charactersPage, setCharactersPage] = useState<number>(1);
+  const [locationsPage, setLocationsPage] = useState<number>(1);
+  const [episodesPage, setEpisodesPage] = useState<number>(1);
   const [episodes, setEpisodes] = useState<Episode[]>([]);
   const [locations, setLocations] = useState<Location[]>([]);
 
@@ -28,25 +34,36 @@ export const ContextProvider: React.FC = ({ children }) => {
     (async function getData() {
       try {
         const responseCharacters = (await getCharacters(charactersPage)).results;
-        const responseEpisodes = (await getEpisodes()).results;
-        const responseLocations = (await getLocations()).results;
 
         setCharacters(await responseCharacters);
+      } catch {
+        setCharacters([]);
+      }
+    }());
+  }, [charactersPage]);
+
+  useEffect(() => {
+    (async function getData() {
+      try {
+        const responseEpisodes = (await getEpisodes(episodesPage)).results;
+        const responseLocations = (await getLocations(locationsPage)).results;
+
         setEpisodes(await responseEpisodes);
         setLocations(await responseLocations);
       } catch {
-        setCharacters([]);
         setEpisodes([]);
         setLocations([]);
       }
     }());
-  }, [charactersPage]);
+  }, []);
 
   const contextValue: ContextValue = {
     characters,
     episodes,
     locations,
     setCharactersPage,
+    setLocationsPage,
+    setEpisodesPage,
   };
 
   return (

@@ -1,3 +1,4 @@
+import { Box, Pagination } from '@mui/material';
 import React, { useContext, useEffect, useState } from 'react';
 import { getCharacters } from '../../api/characters';
 import { Context } from '../../Context';
@@ -6,25 +7,20 @@ import { CharacterCard } from '../CharacterCard';
 export const CharacterList: React.FC = () => {
   const { characters, setCharactersPage } = useContext(Context);
   const [page, setPage] = useState(1);
-  const [totalPages, setTotalPages] = useState<number[]>([]);
+  const [totalPages, setTotalPages] = useState(1);
 
-  const handlePageChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    setPage(+event.target.value);
+  const handlePageChange = (currentPage: number) => {
+    setPage(currentPage);
   };
 
   useEffect(() => {
     (async function getData() {
       try {
         const allPages = await (await getCharacters(1)).info.pages;
-        const tempPages: number[] = [];
 
-        for (let i = 1; i <= allPages; i += 1) {
-          tempPages.push(i);
-        }
-
-        setTotalPages(tempPages);
+        setTotalPages(allPages);
       } catch {
-        setTotalPages([]);
+        setTotalPages(1);
       }
     }());
   }, []);
@@ -35,27 +31,20 @@ export const CharacterList: React.FC = () => {
 
   return (
     <>
-      <label htmlFor="characters_page">
-        {'Characters page: '}
-        <select
-          name="characters_page"
-          id="characters_page"
-          onChange={(event) => handlePageChange(event)}
-        >
-          {totalPages.map(p => (
-            <option key={p}>
-              {p}
-            </option>
-          ))}
-        </select>
-      </label>
-      <div className="container">
-        <div className="container_grid">
+      <Box className="container" marginY="20px">
+        <Box className="container_grid">
           {characters && characters.map((character) => (
             <CharacterCard character={character} key={character.id} />
           ))}
-        </div>
-      </div>
+        </Box>
+      </Box>
+      <Box display="flex" justifyContent="center" marginBottom="24px">
+        <Pagination
+          color="primary"
+          count={totalPages}
+          onChange={(event, ppage) => handlePageChange(ppage)}
+        />
+      </Box>
     </>
   );
 };
