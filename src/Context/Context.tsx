@@ -46,16 +46,25 @@ export const ContextProvider: React.FC = ({ children }) => {
     (async function getData() {
       try {
         const responseEpisodes = (await getEpisodes(episodesPage)).results;
-        const responseLocations = (await getLocations(locationsPage)).results;
 
         setEpisodes(await responseEpisodes);
-        setLocations(await responseLocations);
       } catch {
         setEpisodes([]);
+      }
+    }());
+  }, [episodesPage]);
+
+  useEffect(() => {
+    (async function getData() {
+      try {
+        const responseLocations = (await getLocations(locationsPage)).results;
+
+        setLocations(await responseLocations);
+      } catch {
         setLocations([]);
       }
     }());
-  }, []);
+  }, [locationsPage]);
 
   const contextValue: ContextValue = {
     characters,

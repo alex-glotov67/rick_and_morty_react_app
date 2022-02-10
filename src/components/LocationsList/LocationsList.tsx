@@ -1,20 +1,50 @@
-import React from 'react';
+import { Box, Pagination } from '@mui/material';
+import React, { useContext, useEffect, useState } from 'react';
+import { getLocations } from '../../api/location';
+import { Context } from '../../Context';
 import { LocationCard } from '../LocationCard';
 
-interface Props {
-  locations: Location[];
-}
+export const LocationsList: React.FC = () => {
+  const { locations, setLocationsPage } = useContext(Context);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
 
-export const LocationsList: React.FC<Props> = (props) => {
-  const { locations } = props;
+  const handlePageChange = (currentPage: number) => {
+    setPage(currentPage);
+  };
+
+  useEffect(() => {
+    (async function getData() {
+      try {
+        const allPages = await (await getLocations(1)).info.pages;
+
+        setTotalPages(allPages);
+      } catch {
+        setTotalPages(1);
+      }
+    }());
+  }, []);
+
+  useEffect(() => {
+    setLocationsPage(page);
+  }, [page]);
 
   return (
-    <div className="container">
-      <div className="">
-        {locations && locations.map((location) => (
-          <LocationCard location={location} key={location.id} />
-        ))}
-      </div>
-    </div>
+    <>
+      <Box className="container" marginY="20px">
+        <Box className="container_grid">
+          {locations && locations.map((location) => (
+            <LocationCard location={location} key={location.id} />
+          ))}
+        </Box>
+      </Box>
+      <Box display="flex" justifyContent="center" marginBottom="24px">
+        <Pagination
+          color="primary"
+          count={totalPages}
+          onChange={(event, pageCount) => handlePageChange(pageCount)}
+        />
+      </Box>
+    </>
   );
 };

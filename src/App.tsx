@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React from 'react';
 import { Redirect, Route, Switch } from 'react-router-dom';
 import './App.scss';
 import { CharacterInfo } from './components/CharacterInfo';
@@ -6,11 +6,8 @@ import { CharacterList } from './components/CharacterList';
 import { EpisodesList } from './components/EpisodeList';
 import { LocationsList } from './components/LocationsList';
 import { Navbar } from './components/Navbar';
-import { Context } from './Context';
 
 export const App: React.FC = () => {
-  const { episodes, locations } = useContext(Context);
-
   return (
     <>
       <Navbar />
@@ -29,11 +26,11 @@ export const App: React.FC = () => {
         />
 
         <Route path="/episodes">
-          <EpisodesList episodes={episodes} />
+          <EpisodesList />
         </Route>
 
         <Route path="/locations">
-          <LocationsList locations={locations} />
+          <LocationsList />
         </Route>
 
         <Route path="/watch_list">

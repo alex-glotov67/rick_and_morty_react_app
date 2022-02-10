@@ -42,7 +42,7 @@ export const CharacterList: React.FC = () => {
         <Pagination
           color="primary"
           count={totalPages}
-          onChange={(event, ppage) => handlePageChange(ppage)}
+          onChange={(event, pageCount) => handlePageChange(pageCount)}
         />
       </Box>
     </>
